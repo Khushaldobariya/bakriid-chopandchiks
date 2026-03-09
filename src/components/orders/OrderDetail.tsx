@@ -563,7 +563,21 @@ export default function OrderDetail({ isOpen, onClose }: CustomerDetailsPanelPro
         <div className="px-7 pb-6">
           <button
             type="button"
-            onClick={() => router.push("/checkout")}
+            onClick={() => {
+              // Save customer details to localStorage for checkout page
+              const address = [formData.building, formData.area, formData.landmark, formData.city, formData.state]
+                .filter(Boolean)
+                .join(", ");
+              localStorage.setItem(
+                "customerDetails",
+                JSON.stringify({
+                  fullName: formData.fullName,
+                  contactNumber: formData.contactNumber,
+                  address,
+                })
+              );
+              router.push("/checkout");
+            }}
             className="flex w-full max-w-[624px] mx-auto items-center justify-center hover:opacity-90 transition-opacity"
             style={{
               height: "64px",

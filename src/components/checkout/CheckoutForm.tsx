@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "@/components/layout/Footer";
@@ -32,6 +32,31 @@ export default function CheckoutForm() {
   const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>("net-banking");
   const [showCoupon, setShowCoupon] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+
+  // Customer details state (loaded dynamically from order page)
+  const [customerDetails, setCustomerDetails] = useState({
+    fullName: "",
+    contactNumber: "",
+    address: "",
+  });
+  const [customerSaved, setCustomerSaved] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("customerDetails");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setCustomerDetails({
+          fullName: parsed.fullName || "",
+          contactNumber: parsed.contactNumber || "",
+          address: parsed.address || "",
+        });
+        setCustomerSaved(true);
+      } catch {
+        // ignore parse errors
+      }
+    }
+  }, []);
 
   return (
     <>
@@ -130,7 +155,7 @@ export default function CheckoutForm() {
           {/* Header: back + title */}
           <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             <Link
-              href="/"
+              href="/order"
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -365,25 +390,121 @@ export default function CheckoutForm() {
 
             {/* RIGHT COLUMN */}
             <div style={{ flex: "1 1 562px", maxWidth: "562px", display: "flex", flexDirection: "column", gap: "80px" }}>
-              {/* Step Indicator */}
-              <div style={{ display: "flex", alignItems: "center", gap: "21px" }}>
+              {/* Step Indicator + Forms */}
+              <div style={{ display: "flex", alignItems: "stretch", gap: "21px" }}>
+                {/* Dots + Line */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0" }}>
                   {/* Step 1 dot */}
-                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#E5E5E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ width: "23px", height: "23px", borderRadius: "50%", background: "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)" }} />
+                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#E5E5E5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ width: "23px", height: "23px", borderRadius: "50%", background: customerSaved ? "#26953E" : "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)" }} />
                   </div>
                   {/* Line */}
-                  <div style={{ width: "3.5px", height: "221px", background: "#C44949", borderRadius: "2px" }} />
+                  <div style={{ width: "3.5px", flex: 1, background: "#C44949", borderRadius: "2px" }} />
                   {/* Step 2 dot */}
-                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#E5E5E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ width: "23px", height: "23px", borderRadius: "50%", background: "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)" }} />
+                  <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#E5E5E5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <div style={{ width: "23px", height: "23px", borderRadius: "50%", background: customerSaved ? "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)" : "#D9D9D9" }} />
                   </div>
                 </div>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "293px" }}>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "23px", lineHeight: "28px", color: "#000" }}>
-                    Customer Details
-                  </span>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "23px", lineHeight: "28px", color: "#000" }}>
+
+                {/* Step Content */}
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", flex: 1, gap: "24px" }}>
+                  {/* Customer Details Section */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "23px", lineHeight: "28px", color: "#000" }}>
+                        Customer Details
+                      </span>
+                      {customerSaved && (
+                        <button
+                          onClick={() => setCustomerSaved(false)}
+                          style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 500, fontSize: "14px", color: "#ED0213", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+                        >
+                          Edit
+                        </button>
+                      )}
+                    </div>
+
+                    {!customerSaved ? (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                        {/* Full Name */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <label style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 500, fontSize: "14px", color: "#000" }}>Full Name</label>
+                          <div style={{ display: "flex", alignItems: "center", gap: "10px", border: "1px solid #D8DADC", borderRadius: "10px", padding: "14px 16px" }}>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#37474F"/></svg>
+                            <input type="text" value={customerDetails.fullName} onChange={(e) => setCustomerDetails(prev => ({ ...prev, fullName: e.target.value }))} placeholder="Enter your name" style={{ border: "none", outline: "none", flex: 1, fontFamily: "'Fredoka', sans-serif", fontSize: "16px", color: "#000", background: "transparent" }} />
+                          </div>
+                        </div>
+
+                        {/* Mobile No. */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <label style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 500, fontSize: "14px", color: "#000" }}>Mobile No.</label>
+                          <div style={{ display: "flex", alignItems: "center", gap: "12px", border: "1px solid #D8DADC", borderRadius: "10px", padding: "14px 15px" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                              <svg width="24" height="18" viewBox="0 0 24 18" fill="none"><rect width="24" height="6" fill="#FAB446"/><rect y="6" width="24" height="6" fill="#F5F5F5"/><rect y="12" width="24" height="6" fill="#73AF00"/><circle cx="12" cy="9" r="2" fill="#1065D3"/></svg>
+                              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#494949" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                            </div>
+                            <input type="tel" value={customerDetails.contactNumber} onChange={(e) => setCustomerDetails(prev => ({ ...prev, contactNumber: e.target.value }))} placeholder="99887 78899" style={{ border: "none", outline: "none", flex: 1, fontFamily: "'Fredoka', sans-serif", fontSize: "16px", color: "#000", background: "transparent" }} />
+                          </div>
+                        </div>
+
+                        {/* Address */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                          <label style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 500, fontSize: "14px", color: "#000" }}>Address</label>
+                          <div style={{ border: "1px solid #D8DADC", borderRadius: "10px", padding: "14px 16px" }}>
+                            <input type="text" value={customerDetails.address} onChange={(e) => setCustomerDetails(prev => ({ ...prev, address: e.target.value }))} placeholder="Enter your address" style={{ border: "none", outline: "none", width: "100%", fontFamily: "'Fredoka', sans-serif", fontSize: "16px", color: "#000", background: "transparent" }} />
+                          </div>
+                        </div>
+
+                        {/* Save & Continue Button */}
+                        <button
+                          onClick={() => {
+                            if (customerDetails.fullName.trim() && customerDetails.contactNumber.trim() && customerDetails.address.trim()) {
+                              setCustomerSaved(true);
+                            }
+                          }}
+                          style={{
+                            padding: "14px",
+                            background: (customerDetails.fullName.trim() && customerDetails.contactNumber.trim() && customerDetails.address.trim()) ? "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)" : "#ccc",
+                            borderRadius: "8px",
+                            border: "none",
+                            cursor: (customerDetails.fullName.trim() && customerDetails.contactNumber.trim() && customerDetails.address.trim()) ? "pointer" : "not-allowed",
+                            fontFamily: "'Fredoka', sans-serif",
+                            fontWeight: 500,
+                            fontSize: "16px",
+                            color: "#FFFFFF",
+                            width: "100%",
+                          }}
+                        >
+                          Save & Continue
+                        </button>
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          background: "#F0FFF4",
+                          border: "1px solid #C6F6D5",
+                          borderRadius: "10px",
+                          padding: "14px 16px",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "6px",
+                        }}
+                      >
+                        <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 500, fontSize: "15px", color: "#2D3748" }}>
+                          {customerDetails.fullName}
+                        </span>
+                        <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 400, fontSize: "14px", color: "#718096" }}>
+                          +91 {customerDetails.contactNumber}
+                        </span>
+                        <span style={{ fontFamily: "'Fredoka', sans-serif", fontWeight: 400, fontSize: "14px", color: "#718096" }}>
+                          {customerDetails.address}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Payment Method Label */}
+                  <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 600, fontSize: "23px", lineHeight: "28px", color: customerSaved ? "#000" : "#B0B0B0" }}>
                     Payment Method
                   </span>
                 </div>
