@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Navbar from "@/components/layout/Navbar";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
-import OrderPanel from "@/components/order/OrderPanel";
 
-export default function HeroSection() {
-  const [showOrder, setShowOrder] = useState(false);
+interface HeroSectionProps {
+  onBookNow: () => void;
+}
+
+export default function HeroSection({ onBookNow }: HeroSectionProps) {
 
   return (
     <section
@@ -89,7 +90,7 @@ export default function HeroSection() {
         {/* CTA button — Component 29 */}
         <button
           type="button"
-          onClick={() => setShowOrder(true)}
+          onClick={onBookNow}
           className="inline-flex items-center bg-white rounded-full"
           style={{
             padding: "clamp(4px,0.4vw,5px) clamp(5px,0.5vw,7px) clamp(4px,0.4vw,5px) clamp(14px,1.5vw,21px)",
@@ -137,8 +138,6 @@ export default function HeroSection() {
         </button>
       </div>
 
-      {/* Order Panel overlay */}
-      <OrderPanel isOpen={showOrder} onClose={() => setShowOrder(false)} />
     </section>
   );
 }

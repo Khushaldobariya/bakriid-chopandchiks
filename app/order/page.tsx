@@ -166,7 +166,7 @@ export default function OrderPage() {
                         color: "#000000",
                       }}
                     >
-                      Book Qurbani Now
+                      Book Qurbani Now1
                     </span>
                     <span className="flex h-[40px] w-[40px] items-center justify-center rounded-full bg-black">
                       <svg width="17" height="17" viewBox="0 0 17 17" fill="none" aria-hidden="true">

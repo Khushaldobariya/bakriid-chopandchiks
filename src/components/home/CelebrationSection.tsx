@@ -48,9 +48,10 @@ interface CtaButtonProps {
   circleColor: string;
   width: number;
   href?: string;
+  onClick?: () => void;
 }
 
-function CtaButton({ label, labelColor, buttonText, circleColor, width, href }: CtaButtonProps) {
+function CtaButton({ label, labelColor, buttonText, circleColor, width, href, onClick }: CtaButtonProps) {
   const Tag = href ? "a" : "button";
   return (
     <div
@@ -70,6 +71,7 @@ function CtaButton({ label, labelColor, buttonText, circleColor, width, href }: 
       </p>
       <Tag
         href={href}
+        onClick={onClick}
         className="inline-flex flex-row items-center justify-between"
         style={{
           boxSizing: "border-box",
@@ -102,7 +104,11 @@ function CtaButton({ label, labelColor, buttonText, circleColor, width, href }: 
   );
 }
 
-export default function CelebrationSection() {
+interface CelebrationSectionProps {
+  onBookNow: () => void;
+}
+
+export default function CelebrationSection({ onBookNow }: CelebrationSectionProps) {
   return (
     <section style={{ background: "#fff", padding: "80px 88px" }}>
       <div style={{ maxWidth: "1336px", margin: "0 auto", display: "flex", flexDirection: "row", alignItems: "center", gap: "179px" }}>
@@ -147,7 +153,7 @@ export default function CelebrationSection() {
             buttonText="Book Qurbani Now"
             circleColor="#000000"
             width={273}
-            href="/order"
+            onClick={onBookNow}
           />
           <CtaButton
             label="Have Questions or Need Clarification?"
