@@ -2,6 +2,15 @@
 
 @import "tailwindcss";
 
+/* ── Tailwind v4 theme tokens ─────────────────────────── */
+@theme {
+  --color-primary: #C41E3A;
+  --color-primary-dark: #9B1630;
+  --color-primary-light: #E8324F;
+  --color-secondary: #C41E3A;
+  --color-accent: #F5A623;
+}
+
 /* ── Brand tokens ──────────────────────────────────────── */
 :root {
   --color-primary:        #C41E3A;  /* Zirwa red */
@@ -25,4 +34,31 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   margin: 0;
+}
+.btn-gradient {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #FF4B55 0%, #BA3139 100%);
+  transition: 0.3s ease;
+}
+
+/* Shine / Flash Effect */
+.btn-gradient::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  /* Start off-screen on the RIGHT */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to left,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0) 100%);
+  transition: 0.4s ease;
+}
+
+.btn-gradient:hover::after {
+  left: 100%;
+  /* Move shine to the LEFT */
 }

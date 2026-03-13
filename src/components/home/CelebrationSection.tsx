@@ -3,19 +3,20 @@ function ArrowButton({ bgColor }: { bgColor: string }) {
     <div
       style={{
         position: "relative",
-        width: "46px",
-        height: "46px",
+        width: "clamp(36px,4vw,46px)",
+        height: "clamp(36px,4vw,46px)",
         flexShrink: 0,
       }}
     >
       <div
         style={{
-          width: "46px",
-          height: "46px",
+          width: "100%",
+          height: "100%",
           borderRadius: "50%",
           background: bgColor,
         }}
       />
+
       <svg
         style={{
           position: "absolute",
@@ -27,7 +28,6 @@ function ArrowButton({ bgColor }: { bgColor: string }) {
         height="18"
         viewBox="0 0 18 18"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
       >
         <path
           d="M3 15L15 3M15 3H7M15 3V11"
@@ -46,39 +46,57 @@ interface CtaButtonProps {
   labelColor: string;
   buttonText: string;
   circleColor: string;
-  width: number;
+  width?: number;
   href?: string;
   onClick?: () => void;
 }
 
-function CtaButton({ label, labelColor, buttonText, circleColor, width, href, onClick }: CtaButtonProps) {
+function CtaButton({
+  label,
+  labelColor,
+  buttonText,
+  circleColor,
+  width,
+  href,
+  onClick,
+}: CtaButtonProps) {
   const Tag = href ? "a" : "button";
+
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "12px", width: `${width}px` }}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: "12px",
+        width: "100%",
+        maxWidth: width ? `${width}px` : "100%",
+      }}
     >
       <p
         style={{
           fontFamily: "'Poppins', sans-serif",
           fontWeight: 500,
-          fontSize: "20px",
-          lineHeight: "1.75",
+          fontSize: "clamp(14px,1.3vw,20px)",
+          lineHeight: "1.6",
           color: labelColor,
           margin: 0,
         }}
       >
         {label}
       </p>
+
       <Tag
         href={href}
         onClick={onClick}
-        className="inline-flex flex-row items-center justify-between"
         style={{
-          boxSizing: "border-box",
-          padding: "0px 5px 0px 15px",
-          gap: "17px",
-          width: `${width}px`,
-          height: "56px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0px 8px 0px 18px",
+          gap: "16px",
+          width: "100%",
+          height: "clamp(46px,5vw,56px)",
           background: "#FFE4E4",
           border: "1.43px solid #82131B",
           borderRadius: "60px",
@@ -90,14 +108,15 @@ function CtaButton({ label, labelColor, buttonText, circleColor, width, href, on
           style={{
             fontFamily: "'Poppins', sans-serif",
             fontWeight: 500,
-            fontSize: "clamp(13px, 1.1vw, 20px)",
+            fontSize: "clamp(13px,1.1vw,20px)",
             lineHeight: "1.2",
-            color: "#000000",
+            color: "#000",
             whiteSpace: "nowrap",
           }}
         >
           {buttonText}
         </span>
+
         <ArrowButton bgColor={circleColor} />
       </Tag>
     </div>
@@ -110,15 +129,38 @@ interface CelebrationSectionProps {
 
 export default function CelebrationSection({ onBookNow }: CelebrationSectionProps) {
   return (
-    <section style={{ background: "#fff", padding: "80px 88px" }}>
-      <div style={{ maxWidth: "1336px", margin: "0 auto", display: "flex", flexDirection: "row", alignItems: "center", gap: "179px" }}>
-        {/* Left — text */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "24px", width: "738px", flexShrink: 0 }}>
+    <section
+      style={{
+        background: "#fff",
+        padding: "clamp(40px,8vw,80px) clamp(20px,6vw,88px)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "1336px",
+          margin: "0 auto",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "clamp(40px,6vw,120px)",
+        }}
+      >
+        {/* LEFT TEXT */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+            flex: "1 1 500px",
+            maxWidth: "738px",
+          }}
+        >
           <h2
             style={{
               fontFamily: "'Poppins', sans-serif",
               fontWeight: 600,
-              fontSize: "clamp(28px, 3.5vw, 48px)",
+              fontSize: "clamp(28px,3.5vw,48px)",
               lineHeight: "1.15",
               letterSpacing: "-1px",
               color: "#82131B",
@@ -132,7 +174,7 @@ export default function CelebrationSection({ onBookNow }: CelebrationSectionProp
             style={{
               fontFamily: "'Poppins', sans-serif",
               fontWeight: 500,
-              fontSize: "clamp(14px, 1.3vw, 20px)",
+              fontSize: "clamp(14px,1.3vw,20px)",
               lineHeight: "1.75",
               color: "#313131",
               margin: 0,
@@ -145,22 +187,30 @@ export default function CelebrationSection({ onBookNow }: CelebrationSectionProp
           </p>
         </div>
 
-        {/* Right — CTAs */}
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "flex-start", gap: "32px", width: "328px", flexShrink: 0 }}>
+        {/* RIGHT BUTTONS */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "28px",
+            flex: "1 1 280px",
+            maxWidth: "360px",
+            width: "100%",
+          }}
+        >
           <CtaButton
             label="Ready to Proceed?"
             labelColor="#670004"
             buttonText="Book Qurbani Now"
-            circleColor="#000000"
-            width={273}
+            circleColor="#000"
             onClick={onBookNow}
           />
+
           <CtaButton
             label="Have Questions or Need Clarification?"
             labelColor="#05700D"
             buttonText="Chat on WhatsApp"
             circleColor="#60D669"
-            width={328}
             href="https://wa.me/923001234567"
           />
         </div>

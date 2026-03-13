@@ -22,11 +22,14 @@ function TickIcon() {
           <stop offset="100%" stopColor="#BA3139" />
         </linearGradient>
       </defs>
+
       <path
         d="M16 2.5l2.9 2.6 3.8-.9 1.4 3.6 3.6 1.4-.9 3.8 2.6 2.9-2.6 2.9.9 3.8-3.6 1.4-1.4 3.6-3.8-.9L16 29.5l-2.9-2.6-3.8.9-1.4-3.6-3.6-1.4.9-3.8L2.5 16l2.6-2.9-.9-3.8 3.6-1.4 1.4-3.6 3.8.9L16 2.5z"
         fill="url(#tickGrad2)"
       />
+
       <circle cx="16" cy="16" r="6" fill="white" opacity="0.25" />
+
       <path
         d="M11 16.5l3.5 3.5 6.5-7"
         stroke="white"
@@ -40,168 +43,173 @@ function TickIcon() {
 
 export default function FullTransparencySection() {
   return (
-    <section style={{ background: "#fff", padding: "80px 88px" }}>
-      <div style={{ maxWidth: "1336px", margin: "0 auto", display: "flex", flexDirection: "row", alignItems: "center", gap: "87px" }}>
-        {/* Left — image */}
-        <div style={{ flexShrink: 0 }}>
+    <section
+      style={{
+        background: "#fff",
+        padding: "clamp(40px,6vw,80px) clamp(16px,6vw,88px)",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "1336px",
+          margin: "0 auto",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: "clamp(40px,6vw,87px)",
+        }}
+      >
+        {/* LEFT IMAGE */}
+        <div
+          style={{
+            flex: "1 1 380px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <Image
             src="/images/location.png"
             alt="Qurbani tracking"
             width={448}
             height={448}
             style={{
-              width: "448px",
-              height: "448px",
-              borderRadius: "32px",
+              width: "100%",
+              maxWidth: "448px",
+              height: "auto",
+              borderRadius: "clamp(20px,2vw,32px)",
               objectFit: "cover",
-              display: "block",
             }}
           />
         </div>
 
-        {/* Right — content */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: "48px", flex: 1 }}>
-          <div className="flex flex-col items-start gap-6 w-full">
-            {/* Heading */}
-            <h2
+        {/* RIGHT CONTENT */}
+        <div
+          style={{
+            flex: "1 1 420px",
+            display: "flex",
+            flexDirection: "column",
+            gap: "clamp(24px,3vw,48px)",
+          }}
+        >
+          {/* Heading */}
+          <h2
+            style={{
+              fontFamily: "'Poppins', sans-serif",
+              fontWeight: 600,
+              fontSize: "clamp(28px,4vw,48px)",
+              lineHeight: "1.2",
+              letterSpacing: "-1px",
+              color: "#82131B",
+              margin: 0,
+            }}
+          >
+            Full Transparency & Tracking
+          </h2>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+            <p
               style={{
                 fontFamily: "'Poppins', sans-serif",
-                fontWeight: 600,
-                fontSize: "clamp(28px, 3.5vw, 48px)",
-                lineHeight: "1.15",
-                letterSpacing: "-1px",
-                color: "#82131B",
+                fontWeight: 500,
+                fontSize: "clamp(14px,1.2vw,20px)",
+                lineHeight: "1.7",
+                color: "#494949",
                 margin: 0,
               }}
             >
-              Full Transparency &amp; Tracking
-            </h2>
+              Each Qurbani is assigned a unique ID so you can stay informed
+              throughout the process.
+            </p>
 
-            {/* Subtitle + bullets + footnote */}
-            <div className="flex flex-col items-start gap-3 w-full">
-              <p
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(14px, 1.3vw, 20px)",
-                  lineHeight: "1.75",
-                  color: "#494949",
-                  margin: 0,
-                }}
-              >
-                Each Qurbani is assigned a unique ID so you can stay informed
-                throughout the process.
-              </p>
+            <p
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(14px,1.2vw,20px)",
+                color: "#494949",
+                margin: 0,
+              }}
+            >
+              You receive:
+            </p>
 
-              <p
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(14px, 1.3vw, 20px)",
-                  lineHeight: "1.75",
-                  color: "#494949",
-                  margin: 0,
-                }}
-              >
-                You receive:
-              </p>
+            {/* BULLETS */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {bullets.map((text) => (
+                <div
+                  key={text}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                  }}
+                >
+                  <TickIcon />
 
-              {/* Bullet list */}
-              <div className="flex flex-col items-start gap-3 w-full">
-                {bullets.map((text) => (
-                  <div
-                    key={text}
-                    className="flex flex-row items-center gap-3 w-full"
+                  <span
+                    style={{
+                      fontFamily: "'Fredoka', sans-serif",
+                      fontWeight: 500,
+                      fontSize: "clamp(15px,1.3vw,22px)",
+                      color: "#000",
+                    }}
                   >
-                    <TickIcon />
-                    <span
-                      style={{
-                        fontFamily: "'Fredoka', sans-serif",
-                        fontWeight: 500,
-                        fontSize: "clamp(14px, 1.3vw, 24px)",
-                        lineHeight: "1.4",
-                        color: "#000000",
-                      }}
-                    >
-                      {text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <p
-                style={{
-                  fontFamily: "'Poppins', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(14px, 1.3vw, 20px)",
-                  lineHeight: "1.75",
-                  color: "#494949",
-                  margin: 0,
-                }}
-              >
-                Proof is shared directly via our app or WhatsApp.
-              </p>
+                    {text}
+                  </span>
+                </div>
+              ))}
             </div>
+
+            <p
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 500,
+                fontSize: "clamp(14px,1.2vw,20px)",
+                lineHeight: "1.7",
+                color: "#494949",
+                margin: 0,
+              }}
+            >
+              Proof is shared directly via our app or WhatsApp.
+            </p>
           </div>
 
-          {/* CTA Buttons */}
-          <div style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: "24px" }}>
+          {/* BUTTONS */}
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "16px",
+            }}
+          >
             <button
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "clamp(4px,0.5vw,6px) clamp(24px,2.8vw,43px)",
-                height: "clamp(36px,4vw,56px)",
+                padding: "clamp(8px,1vw,12px) clamp(26px,3vw,44px)",
                 background: "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)",
-                boxShadow: "4px 8px 24px rgba(36, 107, 253, 0.25)",
                 borderRadius: "34px",
                 border: "none",
                 cursor: "pointer",
+                color: "#fff",
+                fontFamily: "'Fredoka', sans-serif",
+                fontSize: "clamp(14px,1.2vw,18px)",
               }}
             >
-              <span
-                style={{
-                  fontFamily: "'Fredoka', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(13px, 1.3vw, 20px)",
-                  lineHeight: "1.2",
-                  color: "#FFFFFF",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Book Now
-              </span>
+              Book Now
             </button>
 
             <button
               style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "clamp(4px,0.5vw,6px) clamp(14px,1.6vw,24px)",
-                height: "clamp(36px,4vw,56px)",
+                padding: "clamp(8px,1vw,12px) clamp(20px,2.5vw,36px)",
                 background: "linear-gradient(90deg, #FF4B55 0%, #BA3139 100%)",
-                boxShadow: "4px 8px 24px rgba(36, 107, 253, 0.25)",
                 borderRadius: "34px",
                 border: "none",
                 cursor: "pointer",
+                color: "#fff",
+                fontFamily: "'Fredoka', sans-serif",
+                fontSize: "clamp(14px,1.2vw,18px)",
               }}
             >
-              <span
-                style={{
-                  fontFamily: "'Fredoka', sans-serif",
-                  fontWeight: 500,
-                  fontSize: "clamp(13px, 1.3vw, 20px)",
-                  lineHeight: "1.2",
-                  color: "#FFFFFF",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                Track My Qurbani
-              </span>
+              Track My Qurbani
             </button>
           </div>
         </div>

@@ -33,14 +33,18 @@ const steps = [
 
 export default function HowItWorksSection() {
   return (
-    <section style={{ background: "#fff", padding: "64px 60px" }}>
+    <section
+      style={{
+        background: "#fff",
+        padding: "clamp(32px,5vw,64px) clamp(16px,5vw,60px)",
+      }}
+    >
       <div
         style={{
           maxWidth: "1392px",
           margin: "0 auto",
           display: "flex",
           flexDirection: "column",
-          alignItems: "flex-start",
           gap: "32px",
         }}
       >
@@ -49,12 +53,11 @@ export default function HowItWorksSection() {
           style={{
             fontFamily: "'Poppins', sans-serif",
             fontWeight: 600,
-            fontSize: "48px",
-            lineHeight: "53px",
+            fontSize: "clamp(28px,4vw,48px)",
+            lineHeight: "1.2",
             letterSpacing: "-1px",
             color: "#82131B",
             margin: 0,
-            alignSelf: "stretch",
           }}
         >
           How Your Qurbani is Performed – Step by Step
@@ -65,11 +68,11 @@ export default function HowItWorksSection() {
           style={{
             fontFamily: "'Poppins', sans-serif",
             fontWeight: 400,
-            fontSize: "24px",
-            lineHeight: "36px",
+            fontSize: "clamp(16px,2vw,24px)",
+            lineHeight: "1.6",
             color: "#585858",
             margin: 0,
-            alignSelf: "stretch",
+            maxWidth: "900px",
           }}
         >
           Your Qurbani is handled with strict Shariah compliance, verified
@@ -77,14 +80,12 @@ export default function HowItWorksSection() {
           and complete peace of mind.
         </p>
 
-        {/* Cards row */}
+        {/* Cards */}
         <div
           style={{
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: "10px",
+            flexWrap: "wrap",
+            gap: "20px",
             width: "100%",
           }}
         >
@@ -92,114 +93,78 @@ export default function HowItWorksSection() {
             <div
               key={s.step}
               style={{
-                boxSizing: "border-box",
+                flex: "1 1 260px",
+                maxWidth: "264px",
+                minHeight: "280px",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
                 padding: "20px 24px",
-                gap: "10px",
-                width: "264px",
-                height: "322px",
+                gap: "12px",
                 background: "#FFF0F1",
                 border: "1px solid #8D0404",
                 borderRadius: "20px",
-                flexShrink: 0,
-                overflow: "hidden",
               }}
             >
-              {/* Inner frame */}
+              {/* Badge */}
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  gap: "12px",
+                  justifyContent: "flex-end",
                   width: "100%",
                 }}
               >
-                {/* Step badge row — aligned right */}
                 <div
                   style={{
                     display: "flex",
-                    flexDirection: "column",
+                    alignItems: "center",
                     justifyContent: "center",
-                    alignItems: "flex-end",
-                    width: "100%",
+                    padding: "4px 12px",
+                    width: `${s.badgeWidth}px`,
                     height: "32px",
+                    background: "#fff",
+                    border: "1px solid #8D0404",
+                    borderRadius: "30px",
                   }}
                 >
-                  <div
-                    style={{
-                      boxSizing: "border-box",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-end",
-                      alignItems: "center",
-                      padding: "4px 12px",
-                      gap: "10px",
-                      width: `${s.badgeWidth}px`,
-                      height: "32px",
-                      background: "#FFFFFF",
-                      border: "1px solid #8D0404",
-                      borderRadius: "30px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: "'Poppins', sans-serif",
-                        fontWeight: 600,
-                        fontSize: "20px",
-                        lineHeight: "24px",
-                        color: "#ED0213",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {s.step}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Title + Description */}
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "24px",
-                    width: "100%",
-                  }}
-                >
-                  <h3
+                  <span
                     style={{
                       fontFamily: "'Poppins', sans-serif",
                       fontWeight: 600,
-                      fontSize: "28px",
-                      lineHeight: "34px",
-                      color: "#8C1A1A",
-                      margin: 0,
-                      alignSelf: "stretch",
-                      wordBreak: "break-word",
+                      fontSize: "clamp(14px,1.2vw,20px)",
+                      color: "#ED0213",
                     }}
                   >
-                    {s.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: "'Poppins', sans-serif",
-                      fontWeight: 400,
-                      fontSize: "18px",
-                      lineHeight: "22px",
-                      color: "#971919",
-                      margin: 0,
-                      alignSelf: "stretch",
-                    }}
-                  >
-                    {s.desc}
-                  </p>
+                    {s.step}
+                  </span>
                 </div>
               </div>
+
+              {/* Content */}
+              <h3
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "clamp(20px,2vw,28px)",
+                  lineHeight: "1.2",
+                  color: "#8C1A1A",
+                  margin: 0,
+                }}
+              >
+                {s.title}
+              </h3>
+
+              <p
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                  fontWeight: 400,
+                  fontSize: "clamp(14px,1.2vw,18px)",
+                  lineHeight: "1.5",
+                  color: "#971919",
+                  margin: 0,
+                }}
+              >
+                {s.desc}
+              </p>
             </div>
           ))}
         </div>

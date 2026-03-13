@@ -156,10 +156,8 @@ export default function OrdersPage() {
       {/* Order Detail Modal */}
       {selectedOrder && (
         <OrderDetail
-          orderId={selectedOrder.id}
-          customerName={selectedOrder.customerName}
-          contactNumber={selectedOrder.contactNumber}
-          status={selectedOrder.status}
+          isOpen={!!selectedOrder}
+          onClose={() => setSelectedOrderId(null)}
         />
       )}
     </div>

@@ -1,23 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import OrderDetail from "@/components/orders/OrderDetail";
+import { supabase } from "@/lib/supabaseClient";
 
-const packageFeatures = ["30 - 35 kg", "Hygienic", "100 % Shariah"];
 
-const deliveryDays = [
-  { id: "day1", title: "Bakrid - Day 1", date: "May 24, 2025" },
-  { id: "day2", title: "Bakrid - Day 2", date: "May 25, 2025", tag: "POPULAR" },
-  { id: "day3", title: "Bakrid - Day 3", date: "May 26, 2025" },
-];
 
-const timeSlots = [
-  "7:00 AM - 9:00 AM",
-  "9:00 AM - 12:00 PM",
-  "12:00 PM - 4:00 PM",
-  "4:00 PM - 8:00 PM",
-];
 
 const preferenceOptions = ["Self / Family", "Madrasa / Needy"];
 
@@ -28,15 +17,75 @@ interface OrderPanelProps {
 
 export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
   const [quantity, setQuantity] = useState(2);
-  const [selectedDay, setSelectedDay] = useState(deliveryDays[0].id);
-  const [selectedSlot, setSelectedSlot] = useState(timeSlots[0]);
+  const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [preference, setPreference] = useState(preferenceOptions[1]);
   const [showCustomerDetails, setShowCustomerDetails] = useState(false);
+  const [services, setServices] = useState<any[]>([]);
+  const [deliveryDays, setDeliveryDays] = useState<any[]>([]);
+  const [timeSlots, setTimeSlots] = useState<any[]>([]);
+  const [service, setService] = useState<any>(null);
 
-  const totalPrice = useMemo(() => quantity * 36000, [quantity]);
+  const totalPrice = useMemo(() => {
+    return quantity * (service?.sale_price || 0);
+  }, [quantity, service]);
 
+  const packageFeatures = [
+    `${service?.weight_low} - ${service?.weight_high} kg`,
+    "Hygienic",
+    "100 % Shariah"
+  ];
+
+  const fetchBakridData = async () => {
+    try {
+
+      // 1️⃣ Get Service
+      const { data: serviceData, error: serviceError } = await supabase
+        .from("bakrid_service")
+        .select("*")
+        .eq("enable", true)
+        .single();
+
+      if (serviceError) throw serviceError;
+
+      setService(serviceData);
+
+      const serviceId = serviceData.id;
+
+      // 2️⃣ Get Dates using service_id
+      const { data: dateData, error: dateError } = await supabase
+        .from("bakrid_service_date")
+        .select("*")
+      // .eq("id", serviceId);
+
+      if (dateError) throw dateError;
+
+      setDeliveryDays(dateData || []);
+
+      // 3️⃣ Get Timings using service_id
+      const { data: timingData, error: timingError } = await supabase
+        .from("bakrid_service_timings")
+        .select("*")
+      // .eq("", serviceId);
+
+      if (timingError) throw timingError;
+
+      setTimeSlots(timingData || []);
+
+    } catch (error) {
+      console.error("Supabase error:", error);
+    }
+  };
+  useEffect(() => {
+    fetchBakridData();
+  }, []);
+  const filteredSlots = useMemo(() => {
+    if (!selectedDay) return [];
+    return timeSlots.filter(
+      (slot) => slot.bakrid_service_date_id === selectedDay
+    );
+  }, [selectedDay, timeSlots]);
   if (!isOpen) return null;
-
   return (
     <>
       <div className="fixed inset-0 z-50" style={{ pointerEvents: "auto" }}>
@@ -141,7 +190,11 @@ export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
                             maximumFractionDigits: 0,
                           }).format(totalPrice)}
                         </span>
-                        <span className="pb-0.5 text-xs text-[#94949E] line-through">₹40,000.00</span>
+                        <span className="pb-0.5 text-xs text-[#94949E] line-through">{service.original_price && new Intl.NumberFormat("en-IN", {
+                          style: "currency",
+                          currency: "INR",
+                          maximumFractionDigits: 0,
+                        }).format(service.original_price)}</span>
                       </div>
                     </div>
 
@@ -183,62 +236,39 @@ export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
               <div className="grid gap-3 md:grid-cols-3">
                 {deliveryDays.map((day) => {
                   const active = day.id === selectedDay;
+
                   return (
                     <button
                       key={day.id}
                       type="button"
-                      onClick={() => setSelectedDay(day.id)}
+                      onClick={() => {
+                        setSelectedDay(day.id);
+                        setSelectedSlot(null);
+                      }}
+                      disabled={day.is_sold_out}
                       className="flex min-h-[100px] items-start justify-between rounded-xl border px-3 py-3 text-left"
                       style={{
                         background: active ? "#FEF2F2" : "#FFFFFF",
-                        borderColor: active ? "#ED0213" : day.id === "day3" ? "#2C2B2B" : "#D8D8D8",
+                        borderColor: active ? "#ED0213" : "#D8D8D8",
+                        opacity: day.is_sold_out ? 0.5 : 1,
                       }}
                     >
-                      <div className="flex flex-col gap-3">
-                        <div
-                          style={{
-                            fontFamily: "Poppins, sans-serif",
-                            fontWeight: 700,
-                            fontSize: "18px",
-                            lineHeight: "1.25",
-                            color: active ? "#000000" : day.id === "day2" ? "#646464" : "#000000",
-                          }}
-                        >
-                          {day.title}
+                      <div className="flex flex-col gap-2">
+                        <div className="font-semibold text-lg">
+                          {day.day}
                         </div>
-                        <div
-                          style={{
-                            fontFamily: "Poppins, sans-serif",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                            lineHeight: "1.25",
-                            color: "#A3A3A3",
-                          }}
-                        >
-                          {day.date}
+
+                        <div className="text-sm text-gray-500">
+                          {new Date(day.service_date).toLocaleDateString("en-IN", {
+                            day: "numeric",
+                            month: "short",
+                          })}
                         </div>
-                      </div>
-                      <span className="mt-0.5 flex h-6 w-6 items-center justify-center">
-                        {active ? (
-                          <span className="flex h-[22px] w-[22px] items-center justify-center rounded-md bg-[#ED0213]">
-                            <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                              <path
-                                d="M1.333 5.222 4.889 8.778 12.667 1"
-                                stroke="#FFFFFF"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                        ) : day.tag ? (
-                          <span className="rounded bg-[#EDEDED] px-2 py-1 text-[8px] font-medium text-[#767575]">
-                            {day.tag}
-                          </span>
-                        ) : (
-                          <span className="h-[22px] w-[22px] rounded-md border border-[#ED0213] bg-white" />
+
+                        {day.is_sold_out && (
+                          <span className="text-xs text-red-500">Sold Out</span>
                         )}
-                      </span>
+                      </div>
                     </button>
                   );
                 })}
@@ -251,25 +281,28 @@ export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
                 Available Slots
               </span>
               <div className="grid gap-3 md:grid-cols-2">
-                {timeSlots.map((slot) => {
-                  const active = slot === selectedSlot;
+                {filteredSlots.map((slot) => {
+                  const active = slot.id === selectedSlot;
+
+                  const start = slot.start_time.slice(0, 5);
+                  const end = slot.end_time.slice(0, 5);
+
                   return (
                     <button
-                      key={slot}
+                      key={slot.id}
                       type="button"
-                      onClick={() => setSelectedSlot(slot)}
+                      disabled={slot.is_sold_out}
+                      onClick={() => setSelectedSlot(slot.id)}
                       className="flex h-10 items-center justify-center rounded-lg border px-3 text-center"
                       style={{
                         background: active ? "#B21E24" : "#FFFFFF",
                         borderColor: active ? "#B21E24" : "#000000",
                         color: active ? "#FFFFFF" : "#6C6C6C",
-                        fontFamily: "Poppins, sans-serif",
-                        fontWeight: 600,
-                        fontSize: "16px",
-                        lineHeight: "20px",
+                        opacity: slot.is_sold_out ? 0.5 : 1,
                       }}
                     >
-                      {slot}
+                      {start} - {end}
+                      {slot.is_sold_out && " (Sold Out)"}
                     </button>
                   );
                 })}

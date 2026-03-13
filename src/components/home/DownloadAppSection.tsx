@@ -8,8 +8,8 @@ function AppleStoreBadge() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: "190px",
-        height: "64px",
+        width: "170px",
+        height: "56px",
         background: "#000",
         borderRadius: "12px",
         textDecoration: "none",
@@ -17,7 +17,7 @@ function AppleStoreBadge() {
         flexShrink: 0,
       }}
     >
-      <svg width="28" height="34" viewBox="0 0 36 44" fill="none">
+      <svg width="24" height="30" viewBox="0 0 36 44" fill="none">
         <path
           d="M29.9 23.3c0-5.3 4.3-7.8 4.5-7.9-2.4-3.6-6.2-4-7.6-4.1-3.2-.3-6.3 1.9-7.9 1.9-1.6 0-4.1-1.9-6.8-1.8-3.5.1-6.7 2-8.5 5.1C-.6 22.8 1.6 32 5.2 37.1c1.8 2.6 3.9 5.4 6.7 5.3 2.7-.1 3.7-1.7 7-1.7 3.2 0 4.1 1.7 6.9 1.6 2.9-.1 4.7-2.6 6.5-5.2 2-2.9 2.9-5.8 2.9-5.9-.1-.1-5.3-2-5.3-8z"
           fill="#fff"
@@ -42,9 +42,9 @@ function AppleStoreBadge() {
           style={{
             fontFamily: "'Poppins', sans-serif",
             fontWeight: 600,
-            fontSize: "17px",
+            fontSize: "15px",
             color: "#fff",
-            lineHeight: "20px",
+            lineHeight: "18px",
           }}
         >
           App Store
@@ -62,8 +62,8 @@ function PlayStoreBadge() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        width: "200px",
-        height: "64px",
+        width: "180px",
+        height: "56px",
         background: "#000",
         borderRadius: "12px",
         textDecoration: "none",
@@ -71,7 +71,7 @@ function PlayStoreBadge() {
         flexShrink: 0,
       }}
     >
-      <svg width="28" height="32" viewBox="0 0 36 40" fill="none">
+      <svg width="24" height="28" viewBox="0 0 36 40" fill="none">
         <path d="M1 1.5L20.5 21 1 40.5V1.5z" fill="#32BBFF" />
         <path d="M1 1.5l26 13.2L20.5 21 1 1.5z" fill="#32BBFF" />
         <path d="M27 14.7L1 1.5l19.5 19.5L27 14.7z" fill="#32BBFF" opacity="0.7" />
@@ -95,9 +95,9 @@ function PlayStoreBadge() {
           style={{
             fontFamily: "'Poppins', sans-serif",
             fontWeight: 600,
-            fontSize: "17px",
+            fontSize: "15px",
             color: "#fff",
-            lineHeight: "20px",
+            lineHeight: "18px",
           }}
         >
           Google Play
@@ -109,35 +109,16 @@ function PlayStoreBadge() {
 
 export default function DownloadAppSection() {
   return (
-    <section style={{ background: "#fff", padding: "80px 88px" }}>
-      <div
-        style={{
-          maxWidth: "1336px",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "162px",
-        }}
-      >
+    <section className="bg-white px-4 py-10 sm:px-8 md:px-16 lg:px-[88px] md:py-20">
+      <div className="max-w-[1336px] mx-auto flex flex-col-reverse lg:flex-row justify-between items-center gap-10 lg:gap-16 xl:gap-[100px]">
         {/* Left — text + badges */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-start",
-            gap: "40px",
-            width: "624px",
-            flexShrink: 0,
-          }}
-        >
+        <div className="flex flex-col items-start gap-8 lg:gap-10 w-full lg:max-w-[624px] flex-shrink-0">
           <h2
             style={{
               fontFamily: "'Poppins', sans-serif",
               fontWeight: 600,
-              fontSize: "64px",
-              lineHeight: "96px",
+              fontSize: "clamp(32px, 4.5vw, 64px)",
+              lineHeight: "1.5",
               color: "#000000",
               margin: 0,
               alignSelf: "stretch",
@@ -150,11 +131,11 @@ export default function DownloadAppSection() {
             style={{
               fontFamily: "'Fredoka', sans-serif",
               fontWeight: 500,
-              fontSize: "24px",
-              lineHeight: "29px",
+              fontSize: "clamp(16px, 1.7vw, 24px)",
+              lineHeight: "1.3",
               color: "#828282",
               margin: 0,
-              width: "566px",
+              maxWidth: "566px",
             }}
           >
             Fresh meat delivered safely to your doorstep with easy ordering and
@@ -162,27 +143,21 @@ export default function DownloadAppSection() {
             the smartest and fastest meat shopping experience.
           </p>
 
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: "22px",
-            }}
-          >
+          <div className="flex flex-row flex-wrap items-center gap-4">
             <AppleStoreBadge />
             <PlayStoreBadge />
           </div>
         </div>
 
         {/* Right — app mockup image */}
-        <div style={{ flexShrink: 0 }}>
+        <div className="flex-shrink-0 w-full lg:w-auto flex justify-center">
           <Image
             src="/images/mobile.png"
             alt="Zirwa app preview"
             width={530}
             height={497}
-            style={{ width: "530px", height: "auto", display: "block" }}
+            className="w-full max-w-[400px] lg:max-w-[530px] h-auto"
+            style={{ display: "block" }}
             priority
           />
         </div>
