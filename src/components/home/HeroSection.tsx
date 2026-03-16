@@ -12,14 +12,14 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
   return (
     <section
       className="relative w-full flex items-center justify-center overflow-hidden"
-      style={{
-        minHeight: "100vh",
-        background: [
-          "linear-gradient(180deg, rgba(237,2,19,0) 0%, rgba(237,2,19,0.4) 100%)",
-          "url('/images/hero-bg.png') center / cover no-repeat",
-        ].join(", "),
-        backgroundColor: "#2d0a0a",
-      }}
+     style={{
+  minHeight: "100vh",
+  backgroundImage: "url('/images/hero-bg-1.jpg')",
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  backgroundColor: "#2d0a0a",
+}}
     >
       {/* Navbar sits inside hero — scrolls away with page */}
       <div className="absolute top-0 left-0 right-0 z-50">
@@ -43,21 +43,20 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
         />
       </div>
 
-      {/* Main content — Frame 1437253420 */}
-      <div
+      {/* <div
         className="relative z-10 flex flex-col items-center text-center"
         style={{
           gap: "clamp(40px, 4vw, 56px)",
           width: "min(1008px, 90vw)",
           padding: "0 16px",
         }}
-      >
-        {/* Text stack — Frame 1437253436 */}
-        <div
+      > */}
+      
+        {/* <div
           className="flex flex-col items-center w-full"
           style={{ gap: "14px" }}
         >
-          {/* Headline */}
+         
           <h1
             className="text-white font-semibold m-0"
             style={{
@@ -70,7 +69,7 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
             Transparency
           </h1>
 
-          {/* Subtitle */}
+    
           <p
             className="text-white m-0"
             style={{
@@ -85,21 +84,15 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
             &mdash; we handle your Qurbani with dignity, accountability, and
             strict adherence to Islamic principles.
           </p>
-        </div>
+        </div> */}
 
-        {/* CTA button — Component 29 */}
-        <button
-          type="button"
-          onClick={onBookNow}
-          className="inline-flex items-center bg-white rounded-full"
-          style={{
-            padding: "clamp(4px,0.4vw,5px) clamp(5px,0.5vw,7px) clamp(4px,0.4vw,5px) clamp(14px,1.5vw,21px)",
-            gap: "clamp(16px,1.8vw,24px)",
-            border: "none",
-            cursor: "pointer",
-            height: "clamp(48px,4.5vw,56px)",
-          }}
-        >
+        
+  {/* <button
+  type="button"
+  onClick={onBookNow}
+  className="absolute bottom-6 right-6 md:bottom-8 md:right-8 inline-flex items-center bg-white rounded-full 
+  px-4 pr-2 py-1 gap-4 md:gap-6 h-12 md:h-14 cursor-pointer"
+>
           <span
             className="font-medium text-black whitespace-nowrap"
             style={{
@@ -111,7 +104,6 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
             Book Qurbani Now
           </span>
 
-          {/* Arrow circle */}
           <span
             className="flex items-center justify-center rounded-full bg-black flex-shrink-0"
             style={{
@@ -135,8 +127,32 @@ export default function HeroSection({ onBookNow }: HeroSectionProps) {
               />
             </svg>
           </span>
-        </button>
-      </div>
+        </button> */}
+    <button
+  onClick={onBookNow}
+  className="absolute bottom-6 right-6 
+  flex items-center gap-4
+  h-[60px] px-10
+  rounded-full
+  bg-gradient-to-r from-[#FFE8A3] via-[#F6C86A] to-[#E3A93D]
+  text-[#6B0F0F] font-semibold text-xl
+  shadow-lg hover:scale-105 transition"
+>
+  Book Now
+
+  <svg
+    className="w-5 h-5"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M7 5l5 5-5 5"
+      clipRule="evenodd"
+    />
+  </svg>
+</button>
+      {/* </div> */}
 
     </section>
   );

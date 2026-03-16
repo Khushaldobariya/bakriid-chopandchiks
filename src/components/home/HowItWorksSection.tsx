@@ -1,7 +1,7 @@
 const steps = [
   {
     step: "STEP-1",
-    badgeWidth: 90,
+    badgeWidth: 94,
     title: "Sheep Selection",
     desc: "Healthy, age-verified sheep sourced from trusted farms and raised in clean environments.",
   },
