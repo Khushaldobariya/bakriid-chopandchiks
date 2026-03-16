@@ -5,7 +5,6 @@ interface ForgotPasswordModalProps {
   open: boolean;
   onClose: () => void;
   onContinue?: () => void;
-  setIsSignUp: (value: boolean) => void;
   setIsLogin: (value: boolean) => void;
   setIsLast: (value: boolean) => void;
 }
@@ -14,7 +13,6 @@ export default function ForgotPasswordModal({
   open,
   onClose,
   onContinue,
-  setIsSignUp,
   setIsLogin,
   setIsLast,
 }: ForgotPasswordModalProps) {
@@ -22,8 +20,13 @@ export default function ForgotPasswordModal({
   const [email, setEmail] = useState<string>("");
 
   useEffect(() => {
-    if (open) setTimeout(() => setShow(true), 20);
-    else setShow(false);
+    let timeout: NodeJS.Timeout;
+    if (open) {
+      timeout = setTimeout(() => setShow(true), 20);
+    } else {
+      setTimeout(() => setShow(false), 0);
+    }
+    return () => clearTimeout(timeout);
   }, [open]);
 
   const handleContinue = () => {

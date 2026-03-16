@@ -15,68 +15,85 @@ interface OrderPanelProps {
   onClose: () => void;
 }
 
+interface Service {
+  id: string;
+  name: string;
+  sale_price: number;
+  original_price?: number;
+  weight_low: number;
+  weight_high: number;
+  enable: boolean;
+}
+
+interface DeliveryDay {
+  id: string;
+  date: string;
+  is_sold_out?: boolean;
+  day?: string;
+  service_date: string;
+}
+
+interface TimeSlot {
+  id: string;
+  bakrid_service_date_id: string;
+  start_time: string;
+  end_time: string;
+  is_sold_out?: boolean;
+}
+
 export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
   const [quantity, setQuantity] = useState(2);
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [preference, setPreference] = useState(preferenceOptions[1]);
   const [showCustomerDetails, setShowCustomerDetails] = useState(false);
-  const [services, setServices] = useState<any[]>([]);
-  const [deliveryDays, setDeliveryDays] = useState<any[]>([]);
-  const [timeSlots, setTimeSlots] = useState<any[]>([]);
-  const [service, setService] = useState<any>(null);
+  const [deliveryDays, setDeliveryDays] = useState<DeliveryDay[]>([]);
+  const [timeSlots, setTimeSlots] = useState<TimeSlot[]>([]);
+  const [service, setService] = useState<Service | null>(null);
 
   const totalPrice = useMemo(() => {
     return quantity * (service?.sale_price || 0);
   }, [quantity, service]);
 
-  const packageFeatures = [
-    `${service?.weight_low} - ${service?.weight_high} kg`,
-    "Hygienic",
-    "100 % Shariah"
-  ];
+  const packageFeatures = service
+    ? [`${service.weight_low} - ${service.weight_high} kg`, "Hygienic", "100 % Shariah"]
+    : ["Hygienic", "100 % Shariah"];
 
-  const fetchBakridData = async () => {
-    try {
-
-      // 1️⃣ Get Service
-      const { data: serviceData, error: serviceError } = await supabase
-        .from("bakrid_service")
-        .select("*")
-        .eq("enable", true)
-        .single();
-
-      if (serviceError) throw serviceError;
-
-      setService(serviceData);
-
-      const serviceId = serviceData.id;
-
-      // 2️⃣ Get Dates using service_id
-      const { data: dateData, error: dateError } = await supabase
-        .from("bakrid_service_date")
-        .select("*")
-      // .eq("id", serviceId);
-
-      if (dateError) throw dateError;
-
-      setDeliveryDays(dateData || []);
-
-      // 3️⃣ Get Timings using service_id
-      const { data: timingData, error: timingError } = await supabase
-        .from("bakrid_service_timings")
-        .select("*")
-      // .eq("", serviceId);
-
-      if (timingError) throw timingError;
-
-      setTimeSlots(timingData || []);
-
-    } catch (error) {
-      console.error("Supabase error:", error);
-    }
-  };
   useEffect(() => {
+    const fetchBakridData = async () => {
+      try {
+        // 1️⃣ Get Service
+        const { data: serviceData, error: serviceError } = await supabase
+          .from("bakrid_service")
+          .select("*")
+          .eq("enable", true)
+          .single();
+
+        if (serviceError) throw serviceError;
+
+        setService(serviceData);
+
+        // 2️⃣ Get Dates using service_id
+        const { data: dateData, error: dateError } = await supabase
+          .from("bakrid_service_date")
+          .select("*");
+
+        if (dateError) throw dateError;
+
+        setDeliveryDays(dateData || []);
+
+        // 3️⃣ Get Timings using service_id
+        const { data: timingData, error: timingError } = await supabase
+          .from("bakrid_service_timings")
+          .select("*");
+
+        if (timingError) throw timingError;
+
+        setTimeSlots(timingData || []);
+      } catch (error) {
+        console.error("Supabase error:", error);
+      }
+    };
     fetchBakridData();
   }, []);
   const filteredSlots = useMemo(() => {
@@ -190,11 +207,11 @@ export default function OrderPanel({ isOpen, onClose }: OrderPanelProps) {
                             maximumFractionDigits: 0,
                           }).format(totalPrice)}
                         </span>
-                        <span className="pb-0.5 text-xs text-[#94949E] line-through">{service.original_price && new Intl.NumberFormat("en-IN", {
+                        <span className="pb-0.5 text-xs text-[#94949E] line-through">{service?.original_price && new Intl.NumberFormat("en-IN", {
                           style: "currency",
                           currency: "INR",
                           maximumFractionDigits: 0,
-                        }).format(service.original_price)}</span>
+                        }).format(quantity * (service?.original_price || 0))}</span>
                       </div>
                     </div>
 

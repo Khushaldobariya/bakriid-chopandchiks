@@ -15,9 +15,33 @@ interface CartItem {
   image?: string;
 }
 
+interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+interface RazorpayOptions {
+  key: string | undefined;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id?: string;
+  handler: (response: RazorpayResponse) => Promise<void>;
+  prefill?: {
+    name?: string;
+    email?: string;
+    contact?: string;
+  };
+  theme?: {
+    color?: string;
+  };
+}
+
 declare global {
   interface Window {
-    Razorpay: any;
+    Razorpay: new (options: RazorpayOptions) => { open: () => void };
   }
 }
 
@@ -26,59 +50,61 @@ export default function Checkout() {
   const [loading, setLoading] = useState<boolean>(false);
   const [addressId, setAddressId] = useState<string | null>(null);
 
-  const [scheduleType, setScheduleType] = useState<"instant" | "schedule">(
+  const [scheduleType] = useState<"instant" | "schedule">(
     "instant"
   );
 
-  const [hour, setHour] = useState<string>("10");
-  const [minute, setMinute] = useState<string>("00");
-  const [ampm, setAmPm] = useState<"AM" | "PM">("AM");
+  const [hour] = useState<string>("10");
+  const [minute] = useState<string>("00");
+  const [ampm] = useState<"AM" | "PM">("AM");
 
-  const [paymentMethod, setPaymentMethod] = useState<string>("netbanking");
+  const [paymentMethod] = useState<string>("netbanking");
 
   /* ---------------- ADDRESS ---------------- */
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const id = localStorage.getItem("selected_address_id");
-      setAddressId(id);
+      setTimeout(() => setAddressId(id), 0);
     }
   }, []);
 
   /* ---------------- CART LOAD ---------------- */
 
-  const fetchCart = async () => {
-    setLoading(true);
-
-    const { data, error } = await supabase.rpc("get_user_cart");
-
-    if (error) {
-      console.error("Cart error:", error);
-      setLoading(false);
-      return;
-    }
-
-    if (!data?.data?.products) {
-      setItems([]);
-      setLoading(false);
-      return;
-    }
-
-    const cart = data.data;
-
-    const mappedItems: CartItem[] = cart.products.map((product: any, index: number) => ({
-      id: product.id,
-      title: product.name,
-      qty: cart.quantities[index] || 1,
-      price: product.sale_price,
-      image: product.image?.image_url,
-    }));
-
-    setItems(mappedItems);
-    setLoading(false);
-  };
-
   useEffect(() => {
+    const fetchCart = async () => {
+      setLoading(true);
+
+      const { data, error } = await supabase.rpc("get_user_cart");
+
+      if (error) {
+        console.error("Cart error:", error);
+        setLoading(false);
+        return;
+      }
+
+      if (!data?.data?.products) {
+        setItems([]);
+        setLoading(false);
+        return;
+      }
+
+      const cart = data.data;
+
+      const mappedItems: CartItem[] = cart.products.map(
+        (product: { id: string; name: string; sale_price: number; image?: { image_url: string } }, index: number) => ({
+          id: product.id,
+          title: product.name,
+          qty: cart.quantities[index] || 1,
+          price: product.sale_price,
+          image: product.image?.image_url,
+        })
+      );
+
+      setItems(mappedItems);
+      setLoading(false);
+    };
+
     fetchCart();
   }, []);
 
@@ -157,7 +183,7 @@ export default function Checkout() {
   }: {
     paidVia: string;
     paymentId?: string | null;
-    paymentData?: any;
+    paymentData?: RazorpayResponse | null;
   }) => {
     const {
       data: { user },
@@ -229,13 +255,14 @@ export default function Checkout() {
       return;
     }
 
-    const options = {
+    const options: RazorpayOptions = {
       key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
       amount: Math.round(total * 100),
       currency: "INR",
       name: "Chop & Chicks",
+      description: "Qurbani Payment",
 
-      handler: async (response: any) => {
+      handler: async (response: RazorpayResponse) => {
         const payload = await buildInsertOrderPayload({
           paidVia: "razorpay",
           paymentId: response.razorpay_payment_id,
@@ -301,13 +328,15 @@ export default function Checkout() {
                 onClick={() => removeItem(item.id)}
               />
 
-              <img
-                src={item.image}
-                width={100}
-                height={100}
-                alt="product"
-                className="rounded-md object-cover"
-              />
+              {item.image && (
+                <Image
+                  src={item.image}
+                  width={100}
+                  height={100}
+                  alt={item.title}
+                  className="rounded-md object-cover"
+                />
+              )}
 
               <div className="flex mt-3 justify-between w-full items-end">
                 <div>

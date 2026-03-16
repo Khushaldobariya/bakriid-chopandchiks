@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Footer from "@/components/layout/Footer";
 
 const COUPONS = [
   {
@@ -46,12 +45,14 @@ export default function CheckoutForm() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setCustomerDetails({
-          fullName: parsed.fullName || "",
-          contactNumber: parsed.contactNumber || "",
-          address: parsed.address || "",
-        });
-        setCustomerSaved(true);
+        setTimeout(() => {
+          setCustomerDetails({
+            fullName: parsed.fullName || "",
+            contactNumber: parsed.contactNumber || "",
+            address: parsed.address || "",
+          });
+          setCustomerSaved(true);
+        }, 0);
       } catch {
         // ignore parse errors
       }
@@ -316,74 +317,50 @@ export default function CheckoutForm() {
                   {/* Net Banking - selected */}
                   <PaymentOption
                     label="Net Banking"
-                    value="net-banking"
                     selected={selectedPayment === "net-banking"}
                     onSelect={() => setSelectedPayment("net-banking")}
                     highlighted
                   />
 
-                  {/* Google Pay */}
                   <PaymentOption
-                    label="Google Pay"
-                    value="google-pay"
-                    selected={selectedPayment === "google-pay"}
-                    onSelect={() => setSelectedPayment("google-pay")}
-                    icon={<GooglePayIcon />}
-                  />
-
-                  {/* Visa */}
-                  <PaymentOption
-                    label="Visa"
-                    value="visa"
-                    selected={selectedPayment === "visa"}
-                    onSelect={() => setSelectedPayment("visa")}
-                    icon={<VisaIcon />}
-                  />
-
-                  {/* MasterCard */}
-                  <PaymentOption
-                    label="MasterCard"
-                    value="mastercard"
-                    selected={selectedPayment === "mastercard"}
-                    onSelect={() => setSelectedPayment("mastercard")}
-                    icon={<MasterCardIcon />}
-                  />
-
-                  {/* Apple Pay */}
-                  <PaymentOption
-                    label="Apple Pay"
-                    value="apple-pay"
-                    selected={selectedPayment === "apple-pay"}
-                    onSelect={() => setSelectedPayment("apple-pay")}
-                    icon={<ApplePayIcon />}
-                  />
-
-                  {/* Credit/Debit */}
-                  <PaymentOption
-                    label="Credit/Debit"
-                    value="credit-debit"
-                    selected={selectedPayment === "credit-debit"}
-                    onSelect={() => setSelectedPayment("credit-debit")}
-                    highlighted
-                  />
-
-                  {/* Cash on delivery */}
-                  <PaymentOption
-                    label="Cash on delivery"
-                    value="cod"
-                    selected={selectedPayment === "cod"}
-                    onSelect={() => setSelectedPayment("cod")}
-                    highlighted
-                  />
-
-                  {/* Pay using UPI */}
-                  <PaymentOption
-                    label="Pay using UPI"
-                    value="upi"
-                    selected={selectedPayment === "upi"}
-                    onSelect={() => setSelectedPayment("upi")}
-                    highlighted
-                  />
+                      label="Google Pay"
+                      selected={selectedPayment === "google-pay"}
+                      onSelect={() => setSelectedPayment("google-pay")}
+                      icon={<GooglePayIcon />}
+                    />
+                    <PaymentOption
+                      label="Visa"
+                      selected={selectedPayment === "visa"}
+                      onSelect={() => setSelectedPayment("visa")}
+                      icon={<VisaIcon />}
+                    />
+                    <PaymentOption
+                      label="Mastercard"
+                      selected={selectedPayment === "mastercard"}
+                      onSelect={() => setSelectedPayment("mastercard")}
+                      icon={<MasterCardIcon />}
+                    />
+                    <PaymentOption
+                      label="Apple Pay"
+                      selected={selectedPayment === "apple-pay"}
+                      onSelect={() => setSelectedPayment("apple-pay")}
+                      icon={<ApplePayIcon />}
+                    />
+                    <PaymentOption
+                      label="Credit / Debit Card"
+                      selected={selectedPayment === "credit-debit"}
+                      onSelect={() => setSelectedPayment("credit-debit")}
+                    />
+                    <PaymentOption
+                      label="Cash on Delivery"
+                      selected={selectedPayment === "cod"}
+                      onSelect={() => setSelectedPayment("cod")}
+                    />
+                    <PaymentOption
+                      label="UPI"
+                      selected={selectedPayment === "upi"}
+                      onSelect={() => setSelectedPayment("upi")}
+                    />
                 </div>
               </div>
             </div>
@@ -774,14 +751,12 @@ function RadioCircle({ selected }: { selected: boolean }) {
 
 function PaymentOption({
   label,
-  value,
   selected,
   onSelect,
   highlighted,
   icon,
 }: {
   label: string;
-  value: string;
   selected: boolean;
   onSelect: () => void;
   highlighted?: boolean;

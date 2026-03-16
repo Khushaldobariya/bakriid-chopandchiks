@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabaseClient";
-import { useRouter } from "next/navigation";
 
 // Icons
 import { FiMail, FiPhone, FiEye, FiEyeOff } from "react-icons/fi";
@@ -38,8 +37,6 @@ export default function SignupPopup({
   setPhoneNumber,
   setIsLast,
 }: SignupPopupProps) {
-  const router = useRouter();
-
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<"email" | "phone">("email");
 
@@ -54,15 +51,6 @@ export default function SignupPopup({
   const [showPass, setShowPass] = useState<boolean>(false);
   const [showConfirmPass, setShowConfirmPass] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (open) {
-      setTimeout(() => setShowPopup(true), 20);
-    } else {
-      setShowPopup(false);
-      handleReset();
-    }
-  }, [open]);
-
   const handleReset = () => {
     setEmail("");
     setPhone("");
@@ -70,6 +58,19 @@ export default function SignupPopup({
     setConfirmPassword("");
     setErrors({});
   };
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (open) {
+      timeout = setTimeout(() => setShowPopup(true), 20);
+    } else {
+      setTimeout(() => {
+        setShowPopup(false);
+        handleReset();
+      }, 0);
+    }
+    return () => clearTimeout(timeout);
+  }, [open]);
 
   const validateEmailForm = (): boolean => {
     const errs: FormErrors = {};

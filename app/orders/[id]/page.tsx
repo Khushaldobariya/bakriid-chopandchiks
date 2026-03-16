@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
-  usePathname,
   useRouter,
   useSearchParams,
 } from "next/navigation";
@@ -11,7 +11,6 @@ import { supabase } from "../../../src/lib/supabaseClient";
 
 import { IoArrowBack } from "react-icons/io5";
 import { FiMessageSquare } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa";
 
 import CancelOrderUI from "../../../src/components/CancelOrderUI";
 import toast from "react-hot-toast";
@@ -56,38 +55,36 @@ interface Address {
   address_type: string;
 }
 
+const STATUS_STEP_MAP: Record<string, number> = {
+  pending: 0,
+  assigned: 1,
+  on_the_way: 2,
+  delivered: 3,
+};
+
+const steps = [
+  "Order Pending",
+  "Order in progress",
+  "Order Assigned",
+  "Order on the Way",
+  "Order Delivered",
+];
+
 export default function OrderDetails() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [userData, setUserData] = useState<any>();
-  const [address, setAddress] = useState<Address | null>(null);
+  const [, setAddress] = useState<Address | null>(null);
 
   const [activeStep, setActiveStep] = useState(0);
   const [isCancelDisabled, setIsCancelDisabled] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const STATUS_STEP_MAP: Record<string, number> = {
-    pending: 0,
-    assigned: 1,
-    on_the_way: 2,
-    delivered: 3,
-  };
-
-  const steps = [
-    "Order Pending",
-    "Order in progress",
-    "Order Assigned",
-    "Order on the Way",
-    "Order Delivered",
-  ];
 
   /* ================= AUTH ================= */
 
@@ -99,13 +96,28 @@ export default function OrderDetails() {
 
       if (!user) {
         router.push(`/?login=true`);
-      } else {
-        setUserData(user);
       }
     };
 
     checkAuth();
-  }, [router, pathname]);
+  }, [router]);
+
+  /* ================= FETCH ADDRESS ================= */
+
+  const userAddress = async (addressId: string) => {
+    const { data, error } = await supabase
+      .from("user_address")
+      .select("*")
+      .eq("id", addressId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching address:", error);
+      return;
+    }
+
+    setAddress(data);
+  };
 
   /* ================= FETCH ORDER ================= */
 
@@ -153,23 +165,6 @@ export default function OrderDetails() {
 
     if (orderId) fetchOrder();
   }, [orderId]);
-
-  /* ================= FETCH ADDRESS ================= */
-
-  const userAddress = async (addressId: string) => {
-    const { data, error } = await supabase
-      .from("user_address")
-      .select("*")
-      .eq("id", addressId)
-      .single();
-
-    if (error) {
-      console.error("Error fetching address:", error);
-      return;
-    }
-
-    setAddress(data);
-  };
 
   /* ================= CANCEL ORDER ================= */
 
@@ -315,10 +310,15 @@ export default function OrderDetails() {
                 key={item.id}
                 className="border rounded-lg p-3 flex gap-3 bg-gray-50"
               >
-                <img
-                  src={item.image?.image_url}
-                  className="w-20 h-20 rounded object-cover"
-                />
+                {item.image?.image_url && (
+                  <Image
+                    src={item.image.image_url}
+                    alt={item.name}
+                    width={80}
+                    height={80}
+                    className="w-20 h-20 rounded object-cover"
+                  />
+                )}
 
                 <div className="text-sm">
                   <p className="font-semibold">{item.name}</p>

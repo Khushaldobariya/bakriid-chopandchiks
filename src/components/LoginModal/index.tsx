@@ -46,8 +46,13 @@ export default function LoginModal({
   }, [open]);
 
   useEffect(() => {
-    if (open) setTimeout(() => setShow(true), 10);
-    else setShow(false);
+    let timeout: NodeJS.Timeout;
+    if (open) {
+      timeout = setTimeout(() => setShow(true), 10);
+    } else {
+      setTimeout(() => setShow(false), 0);
+    }
+    return () => clearTimeout(timeout);
   }, [open]);
 
   // ---------------------------

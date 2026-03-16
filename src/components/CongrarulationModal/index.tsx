@@ -15,8 +15,13 @@ export default function CongratulationModal({
   const [show, setShow] = useState<boolean>(false);
 
   useEffect(() => {
-    if (open) setTimeout(() => setShow(true), 20);
-    else setShow(false);
+    let timeout: NodeJS.Timeout;
+    if (open) {
+      timeout = setTimeout(() => setShow(true), 20);
+    } else {
+      setTimeout(() => setShow(false), 0);
+    }
+    return () => clearTimeout(timeout);
   }, [open]);
 
   const handleBackToLogin = (): void => {

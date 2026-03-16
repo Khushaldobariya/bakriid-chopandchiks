@@ -92,7 +92,6 @@ return (
       open={isForgot}
       onClose={() => setIsForgot(false)}
       setIsLogin={setIsLogin}
-      setIsSignUp={setIsSignUp}
       setIsLast={setIsLast}
   />
 </>

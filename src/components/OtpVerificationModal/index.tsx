@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 interface OtpVerificationModalProps {
   open: boolean;
   onClose: () => void;
-  setIsLast?: (value: boolean) => void;
   number: string;
   setCreateAccountModal: (value: boolean) => void;
 }
@@ -14,7 +13,6 @@ interface OtpVerificationModalProps {
 export default function OtpVerificationModal({
   open,
   onClose,
-  setIsLast,
   number,
   setCreateAccountModal,
 }: OtpVerificationModalProps) {
@@ -22,19 +20,6 @@ export default function OtpVerificationModal({
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState<number>(30);
   const [canResend, setCanResend] = useState<boolean>(false);
-
-  // Open/Close animation + reset OTP when closing
-  useEffect(() => {
-    if (open) {
-      setTimeout(() => setShow(true), 10);
-      startCountdown();
-    } else {
-      setShow(false);
-      setOtp(["", "", "", "", "", ""]);
-      setTimer(30);
-      setCanResend(false);
-    }
-  }, [open]);
 
   // Start countdown
   const startCountdown = () => {
@@ -52,6 +37,25 @@ export default function OtpVerificationModal({
       });
     }, 1000);
   };
+
+  // Open/Close animation + reset OTP when closing
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (open) {
+      timeout = setTimeout(() => {
+        setShow(true);
+        startCountdown();
+      }, 10);
+    } else {
+      setTimeout(() => {
+        setShow(false);
+        setOtp(["", "", "", "", "", ""]);
+        setTimer(30);
+        setCanResend(false);
+      }, 0);
+    }
+    return () => clearTimeout(timeout);
+  }, [open]);
 
   // Handle OTP change
   const handleChange = (value: string, index: number) => {
@@ -78,7 +82,7 @@ export default function OtpVerificationModal({
     }
 
     try {
-      const { data, error } = await supabase.auth.verifyOtp({
+      const { error } = await supabase.auth.verifyOtp({
         phone: number,
         token: otpCode,
         type: "sms",
